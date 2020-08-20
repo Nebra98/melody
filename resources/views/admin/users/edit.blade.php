@@ -39,22 +39,32 @@
                                 </div>
                             </div>
 
+
                             @csrf
                             {{ method_field('PUT') }}
+                            @can('delete-users')
                             <div class="form-group row">
                                 <label for="roles" class="col-md-2 col-form-label text-md-right">Role</label>
 
                                 <div class="col-md-6">
-                            @foreach($roles as $role )
 
-                                <div class="form-check">
-                                    <input type="checkbox" name="roles[]" value="{{ $role->id }}"
-                                    @if($user->roles->pluck('id')->contains($role->id)) checked @endif>
-                                    <label>{{ $role->name }}</label>
-                                </div>
-                            @endforeach
+                                    @foreach($roles as $role )
+
+                                            <div class="form-check">
+                                                <input type="checkbox" name="roles[]" value="{{ $role->id }}"
+                                                       @if($user->roles->pluck('id')->contains($role->id))
+                                                       checked @endif
+                                                >
+                                                <label>{{ $role->name }}</label>
+                                            </div>
+                                    @endforeach
+
+
+
                                 </div>
                             </div>
+                            @endcan
+
                             <button type="submit" class="btn btn-primary">
                                 Izmijeni
                             </button>

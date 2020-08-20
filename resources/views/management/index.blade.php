@@ -9,6 +9,11 @@
 
                     <div class="card-body">
 
+                        <div class="alert alert-primary" role="alert">
+                            Napomena, <br>
+                            Brisanjem albuma, brišete sve pjesme koje se nalaze u njemu.
+                        </div>
+
                         <table class="table">
                             <thead>
                             <tr>
@@ -35,7 +40,8 @@
                                                     <tr>
                                                         <td>{{ $photo->songName }}</td>
                                                         <td>
-                                                            <form action="{{ route('photos.destroy', $photo, $user) }}" method="POST" class="float-left">
+                                                            @php($zastavica = 0)
+                                                            <form action="{{ route('photos.destroy', $photo, $user, 0) }}" method="POST" class="float-left">
                                                                 @csrf
                                                                 {{ method_field('DELETE') }}
                                                                 <button type="submit" class="btn btn-warning">Izbriši pjesmu</button>

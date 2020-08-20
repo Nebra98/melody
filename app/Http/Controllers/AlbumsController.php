@@ -6,6 +6,7 @@ use App\Album;
 use App\Photo;
 use App\User;
 use Auth;
+use Gate;
 
 use Illuminate\Http\Request;
 
@@ -20,7 +21,8 @@ class AlbumsController extends Controller
     public function index()
     {
         $albums = Album::with('Photos')->get();
-        return view('albums.index')->with('albums', $albums);
+        $photos = Photo::all();
+        return view('albums.index')->with('albums', $albums)->with('photos', $photos);
     }
 
     /**
@@ -72,9 +74,16 @@ class AlbumsController extends Controller
         $album->cover_image = $filenameToStore;
         // $album->cover_image = $filename;;
 
-        $album->save();
+        // $album->save();
 
-        return redirect('/albums')->with('success', 'Album created');
+        if($album->save()){
+            $request->session()->flash('success', "Album " . $album->name . ' je uspještno kreiran');
+        }else{
+            $request->session()->flash('error', 'Došlo je do pogreške tokom kreiranja albuma!');
+        }
+
+
+        return redirect('/albums');
     }
 
     /**
@@ -123,8 +132,19 @@ class AlbumsController extends Controller
      */
     public function destroy(Album $album)
     {
-        $album->delete();
+        // $album->delete();
 
-        return redirect()->route('management.show',Auth::user());
+        if($album->delete()){
+            session()->flash('success', "Album " . $album->name . ' je uspješno izbrisan');
+        }else{
+            session()->flash('error', 'Došlo je do greške prilikom brisanja albuma - ' . $album->name . '!');
+        }
+
+        if(Gate::denies('delete-users')){
+            return redirect()->route('management.show',Auth::user());
+        }
+
+        return redirect()->route('admin.users.index');
+        // return redirect()->route('management.show',Auth::user());
     }
 }

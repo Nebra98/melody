@@ -60,18 +60,25 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $user->roles()->sync($request->roles);
+        if(Gate::allows('edit-users')){
+            $user->name = $request->name;
+            $user->email = $request->email;
+            //$user->roles()->sync($request->roles);
+        }
 
-        $user->name = $request->name;
-        $user->email = $request->email;
+        if(Gate::allows('delete-users')){
+            $user->roles()->sync($request->roles);
+            $user->name = $request->name;
+            $user->email = $request->email;
+        }
+
 
 
         if($user->save()){
-            $request->session()->flash('success', $user->name . ' has been updated');
+            $request->session()->flash('success', 'Uredili ste korisika ' . $user->name);
         }else{
-            $request->session()->flash('error', 'There was an error updating the user');
+            $request->session()->flash('error', 'Došlo je do greške tokom uređivanja korisnika ' . $user->name);
         }
-
 
 
         return redirect()->route('admin.users.index');
@@ -91,7 +98,15 @@ class UsersController extends Controller
         }
 
         $user->roles()->detach();
-        $user->delete();
+        // $user->delete();
+
+
+        if($user->delete()){
+            session()->flash('success', "Korisnik " . $user->name . ' je uspješno izbrisan');
+        }else{
+            session()->flash('error', 'Došlo je do greške prilikom brisanja korisnika ' . $user->name . '!');
+        }
+
 
         return redirect()->route('admin.users.index');
     }

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Photo;
 use App\User;
 use Auth;
+use Gate;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class PhotosController extends Controller
 {
@@ -64,9 +66,16 @@ class PhotosController extends Controller
                 $photo->songName = $request->input('songName');
                 $photo->coverImage = $imageName;
                 $photo->artistName = $request->input('artistName');
-                $photo->save();
+                //$photo->save();
 
-                return redirect('/albums/' . $request->input('album_id'))->with('success', 'Photo uploaded');
+                if($photo->save()){
+                    $request->session()->flash('success', "Stavka " . $photo->songName . ' je uspještno prenesena');
+                }else{
+                    $request->session()->flash('error', 'Došlo je do pogreške tokom prijesnosa stavke!');
+                }
+
+
+                return redirect('/albums/' . $request->input('album_id'));
             }
         }
     }
@@ -111,13 +120,29 @@ class PhotosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+
+
     public function destroy(Photo $photo, User $user)
     {
+        //$photo->delete();
 
-        $photo->delete();
+        if($photo->delete()){
+            session()->flash('success', "Stavka " . $photo->songName . ' je uspješno izbrisana');
+        }else{
+            session()->flash('error', 'Došlo je do greške prilikom brisanja stavke ' . $photo->songName . '!');
+        }
 
-        return redirect()->route('management.show',Auth::user());
+
+
+        if(Gate::denies('delete-users')){
+            return redirect()->route('management.show',Auth::user());
+        }
+
+        // return redirect()->route('information.show', $user);
+        return redirect()->route('admin.users.index');
 
 
     }
+
 }

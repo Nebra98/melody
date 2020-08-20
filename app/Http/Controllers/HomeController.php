@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Album;
 
+use App\Photo;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -26,7 +27,8 @@ class HomeController extends Controller
     {
 
         $albums = Album::with('Photos')->get();
-        return view('albums.index')->with('albums', $albums);
+        $photos = Photo::all();
+        return view('albums.index')->with('albums', $albums)->with('photos', $photos);
 
         //return view('home');
     }

@@ -9,10 +9,17 @@
 
                     <div class="card-body">
 
+                        @can('delete-users')
+                        <div class="alert alert-primary" role="alert">
+                            Napomena, <br>
+                            Brisanjem korisnika, brišete sve njegove albume i pjesme. <br>
+                            Albume i pjesme mogu imati oni korisnicu koji imaju rolu 'user'.
+                        </div>
+                        @endcan
                         <table class="table">
                             <thead>
                             <tr>
-                                <th scope="col"># id</th>
+                                <th scope="col">#id</th>
                                 <th scope="col">Ime</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Role</th>
@@ -25,10 +32,17 @@
                                     <th scope="row">{{ $user->id }}</th>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
-                                    <td>{{ implode(', ',  $user->roles()->get()->pluck('name')->toArray() )}}</td>
+                                    <td>{{ implode(', ',  $user->roles()->get()->pluck('name')->toArray() )}}
+
+                                    </td>
                                     <td>
                                         @can('edit-users')
                                             <a href="{{ route('admin.users.edit', $user->id) }}"> <button type="button" class="btn btn-primary float-left">Uredi</button></a>
+                                            @php($aa = $user->roles()->get()->where('name', 'user')->pluck('name'))
+
+                                            @if($aa == '["user"]')
+                                                <a href="{{ route('information.show', $user) }}"> <button type="button" class="btn btn-info float-left">info</button></a>
+                                            @endif
                                         @endcan
 
                                         @can('delete-users')
@@ -37,6 +51,8 @@
                                             @csrf
                                             {{ method_field('DELETE') }}
                                             <button type="submit" class="btn btn-danger">Izbriši</button>
+
+
                                         </form>
 
 

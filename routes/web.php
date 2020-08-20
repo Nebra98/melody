@@ -13,9 +13,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/*
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
+
 });
+*/
+
+Route::get('/', 'IndexController@index');
+
+Route::get('about', function(){
+    return view('about');
+});
+
+Route::get('contact', function() {
+    return view('contact');
+});
+
 
 Auth::routes();
 
@@ -41,3 +55,9 @@ Route::post('/photos/store/', 'PhotosController@store');
 Route::resource('profile', 'ProfilesController');
 
 Route::resource('management', 'ManagementController');
+
+Route::resource('information', 'InformationController');
+
+Route::resource('index', 'IndexController');
+
+Route::resource('contacts', 'ContactsController');

@@ -8441,6 +8441,10 @@ button.bg-dark:focus {
   margin-left: 0.5rem !important;
 }
 
+.brane{
+    color: white;
+}
+
 .m-3 {
   margin: 1rem !important;
 }

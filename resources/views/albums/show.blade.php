@@ -19,7 +19,8 @@
     <div class="text-center">
         <h1>{{$album->name}}</h1>
         <a href="{{ route('albums.index') }}" class="button secondary">Nazad</a>
-        <a href="{{ url('photos/create/' . $album->id) }}" class="button">Prenesite novu stavku u album</a>
+
+        <a href="{{ url('photos/create/' . $album->id) }}" class="btn btn-primary" role="button">Prenesite novu stavku u album</a>
     </div>
     <hr>
     <h3 class="text-center">Glazba</h3>

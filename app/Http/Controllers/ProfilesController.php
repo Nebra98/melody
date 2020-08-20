@@ -15,7 +15,7 @@ use Image;
 
 class ProfilesController extends Controller
 {
-    
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -39,7 +39,7 @@ class ProfilesController extends Controller
 
         $photos = Photo::where('user_id', '=', $user->id)->get();
 
-        return view('UserProfile.profile')->with('user', $user)->with('albums', $albums)->with('photos', $photos);         
+        return view('UserProfile.profile')->with('user', $user)->with('albums', $albums)->with('photos', $photos);
     }
 
     public function update(Request $request, $id)
@@ -49,8 +49,8 @@ class ProfilesController extends Controller
             'last_name'=>'required|string|max:255',
             'email'=>'required|string',
         ));
-        
-        
+
+
         $user = User::find($id);
 
         $user->name = $request->name;
@@ -65,14 +65,14 @@ class ProfilesController extends Controller
             $avatar = $request->file('avatar');
             $filename = time() . '.'.$avatar->getClientOriginalExtension();
             Image::make($avatar)->resize(300, 300)->save(public_path('uploads/avatar/'. $filename));
-        
+
             $user->avatar = $filename;
         }
 
          if($user->save()){
-            $request->session()->flash('success', $user->name . ' has been updated');
+            $request->session()->flash('success', 'Uspješno ste uredili profil');
         }else{
-            $request->session()->flash('error', 'There was an error updating the user');
+            $request->session()->flash('error', 'Nastala je greška prilikom uređivanja profila!');
         }
 
         return redirect()->route('profile.show', $user)->withUser($user);
